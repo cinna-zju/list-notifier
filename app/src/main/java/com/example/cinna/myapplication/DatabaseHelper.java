@@ -24,7 +24,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(sql);
 
-        sql = "create table if not exists links("
+        sql = "create table if not exists opt("
+                +"_id INTEGER primary key,"
+                +"title text,"
+                +"date text,"
+                +"addr text)";
+        db.execSQL(sql);
+
+        sql = "create table if not exists isee("
                 +"_id INTEGER primary key,"
                 +"title text,"
                 +"date text,"
@@ -45,7 +52,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(sql);
 
-        sql = "create table if not exists links("
+        sql = "create table if not exists opt("
+                +"_id INTEGER primary key,"
+                +"title text,"
+                +"date text,"
+                +"addr text)";
+        db.execSQL(sql);
+
+        sql = "create table if not exists isee("
                 +"_id INTEGER primary key,"
                 +"title text,"
                 +"date text,"
