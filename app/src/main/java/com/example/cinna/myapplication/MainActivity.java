@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private List<View> viewlist;
 
     private Parser parser;
-    private List<item> items;
+    private List<item> items_opt;
+    private List<item> items_isee;
 
 
 
@@ -86,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         viewpager.setAdapter(pageradapter);
-        //pageradapter.notifyDataSetChanged();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper database = new DatabaseHelper(this);
         final SQLiteDatabase db = database.getReadableDatabase();
         final Cursor cursor = db.rawQuery("SELECT _id, title, date, addr from opt", null);
-        //final ListView listview = (ListView) findViewById(R.id.listview1);
         final SimpleCursorAdapter adapter_opt=new SimpleCursorAdapter(MainActivity.this,
                 android.R.layout.simple_list_item_2,
                 cursor,
@@ -102,10 +101,8 @@ public class MainActivity extends AppCompatActivity {
                 new int[]{android.R.id.text1, android.R.id.text2}
         );
         listview1.setAdapter(adapter_opt);
-        adapter_opt.notifyDataSetChanged();
 
         final Cursor cursor2 = db.rawQuery("SELECT _id, title, date, addr from isee",null);
-        //final ListView listview2 = (ListView) findViewById(R.id.listview1);
         final SimpleCursorAdapter adapter_isee=new SimpleCursorAdapter(MainActivity.this,
                 android.R.layout.simple_list_item_2,
                 cursor2,
@@ -113,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                 new int[]{android.R.id.text1, android.R.id.text2}
         );
         listview2.setAdapter(adapter_isee);
-        adapter_isee.notifyDataSetChanged();
 
 
         listview1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -162,33 +158,30 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        new Thread() {
+
+
+
+
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                //Log.i("dd","in the thread");
-                try {
-                    URL url = new URL("http://www.cinnabrave.cn/result.xml");
-                    InputStream is = url.openStream();
-
-                    parser = new PullParser();
-                    items = parser.parse(is);
-                    //System.out.println(is.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                String sql1="DELETE FROM opt";
-                db.execSQL(sql1);
+            public void onClick(View view) {
                 //cursor.requery();
+                //cursor2.requery();
+                //adapter_isee.notifyDataSetChanged();
                 //adapter_opt.notifyDataSetChanged();
 
-                if(items.isEmpty() != true) {
-                    for (item item : items) {
+
+                String sql1 = "DELETE FROM opt";
+                db.execSQL(sql1);
+
+                if (items_opt != null) {
+                    for (item item : items_opt) {
 
                         String title = item.getTitle();
                         String date = item.getDate();
                         String addr = item.getHref();
-                        //System.out.println("dd"+addr);
                         ContentValues values = new ContentValues();
                         values.put("title", title);
                         values.put("date", date);
@@ -196,32 +189,16 @@ public class MainActivity extends AppCompatActivity {
                         db.insert("opt", "_id", values);
                     }
                 }
-                //cursor.requery();
-                //adapter_opt.notifyDataSetChanged();
-
-                try {
-                    URL url = new URL("http://www.cinnabrave.cn/dwjl.xml");
-                    InputStream is = url.openStream();
-
-                    parser = new PullParser();
-                    items = parser.parse(is);
-                    //System.out.println(is.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
                 String sql2="DELETE FROM isee";
                 db.execSQL(sql2);
-                //cursor.requery();
-//                adapter_isee.notifyDataSetChanged();
 
-                if(items.isEmpty() != true) {
-                    for (item item : items) {
+                if(items_isee != null) {
+                    for (item item : items_isee) {
 
                         String title = item.getTitle();
                         String date = item.getDate();
                         String addr = item.getHref();
-                        //System.out.println("dd"+addr);
                         ContentValues values = new ContentValues();
                         values.put("title", title);
                         values.put("date", date);
@@ -229,88 +206,22 @@ public class MainActivity extends AppCompatActivity {
                         db.insert("isee", "_id", values);
                     }
                 }
-                //cursor.requery();
-                //adapter_isee.notifyDataSetChanged();
+
+                cursor.requery();
+                cursor2.requery();
+                adapter_isee.notifyDataSetChanged();
+                adapter_opt.notifyDataSetChanged();
+
+
+
+
 
 
             }
-        }.start();
-
-        adapter_isee.notifyDataSetChanged();
-        adapter_opt.notifyDataSetChanged();
-
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                //Log.i("dd","in the thread");
-//                try {
-//                    URL url = new URL("http://www.cinnabrave.cn/dwjl.xml");
-//                    InputStream is = url.openStream();
-//
-//                    parser = new PullParser();
-//                    items = parser.parse(is);
-//                    //System.out.println(is.toString());
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//                String sql1="DELETE FROM isee";
-//                db.execSQL(sql1);
-//                cursor.requery();
-//                adapter_isee.notifyDataSetChanged();
-//
-//                if(items.isEmpty() != true) {
-//                    for (item item : items) {
-//
-//                        String title = item.getTitle();
-//                        String date = item.getDate();
-//                        String addr = item.getHref();
-//                        //System.out.println("dd"+addr);
-//                        ContentValues values = new ContentValues();
-//                        values.put("title", title);
-//                        values.put("date", date);
-//                        values.put("addr", addr);
-//                        db.insert("isee", "_id", values);
-//                    }
-//                }
-//                cursor.requery();
-//                adapter_isee.notifyDataSetChanged();
-//
-//            }
-//        }.start();
-
-
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String sql1="DELETE FROM opt";
-//                db.execSQL(sql1);
-//                cursor.requery();
-//                adapter_opt.notifyDataSetChanged();
-//
-//                if(items.isEmpty() != true) {
-//                    for (item item : items) {
-//
-//                        String title = item.getTitle();
-//                        String date = item.getDate();
-//                        String addr = item.getHref();
-//                        //System.out.println("dd"+addr);
-//                        ContentValues values = new ContentValues();
-//                        values.put("title", title);
-//                        values.put("date", date);
-//                        values.put("addr", addr);
-//                        db.insert("opt", "_id", values);
-//                    }
-//                }
-//                    cursor.requery();
-//                    adapter_opt.notifyDataSetChanged();
-//
-//            }
-//        });
+        });
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -328,7 +239,38 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.refresh) {
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        URL url = new URL("http://www.cinnabrave.cn/result.xml");
+                        InputStream is = url.openStream();
+
+                        parser = new PullParser();
+                        items_opt = parser.parse(is);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        URL url = new URL("http://www.cinnabrave.cn/dwjl.xml");
+                        InputStream is = url.openStream();
+
+                        parser = new PullParser();
+                        items_isee = parser.parse(is);
+                        //System.out.println(is.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+
 
 
         }
@@ -338,7 +280,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(id == R.id.delete){
+            String sql="delete from opt";
+            String sql2="delete from isee";
+            DatabaseHelper database = new DatabaseHelper(this);
+            final SQLiteDatabase db = database.getReadableDatabase();
 
+            db.execSQL(sql);
+            db.execSQL(sql2);
 
         }
         return super.onOptionsItemSelected(item);

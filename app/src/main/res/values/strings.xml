@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">OverWatch</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_edit">EditActivity</string>
+    <string name="title_activity_edit">Add key word...</string>
 </resources>

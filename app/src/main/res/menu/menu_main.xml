@@ -6,8 +6,8 @@
         android:id="@+id/add"
         android:title="Add key word"
         android:orderInCategory="100" />
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/refresh"
+        android:title="update database"
         android:orderInCategory="101"
         app:showAsAction="never" />
     <item android:title="delete"
